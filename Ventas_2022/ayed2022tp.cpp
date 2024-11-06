@@ -4,13 +4,13 @@
 using namespace std;
 
 struct Empleado {
-	char codEmp[9 + 1];
+	char codEmpleado[9 + 1];
 	char nombYApe[50 + 1];
 	int cantProdVend = 0;
 };
 
 struct Venta {
-	char codEmp[9 + 1];
+	char codEmpleado[9 + 1];
 	int codProd;
 	int fecha;
 	float precioVenta;
@@ -27,7 +27,7 @@ struct NodoPilaProductosVendidos {
 };
 
 struct Reporte {
-	char codEmp[9 + 1];
+	char codEmpleado[9 + 1];
 	char nombYApe[50 + 1];
 	int totalProductosVendidos = 0;
 	float totalRecaudado = 0;
@@ -53,12 +53,12 @@ void mostrarEmpleados() {
 	FILE* empleados = fopen("Empleados.dat","rb+");
 
 	cout << "Codigo Empleado, Nombre y Apellido, Cantidad de productos Vendidos" << endl;
-	Empleado e;
-	fread(&e, sizeof(Empleado), 1, empleados);
+	Empleado empleado;
+	fread(&empleado, sizeof(Empleado), 1, empleados);
 
 	while (!feof(empleados)) {
-		cout << e.codEmp << ", " << e.nombYApe << ", " << e.cantProdVend << endl;
-		fread(&e, sizeof(Empleado), 1, empleados);
+		cout << empleado.codEmpleado << ", " << empleado.nombYApe << ", " << empleado.cantProdVend << endl;
+		fread(&empleado, sizeof(Empleado), 1, empleados);
 	}
 
 	cout << endl;
@@ -91,23 +91,23 @@ void mostrarVentas() {
 	FILE* ventas = fopen("Ventas.dat","rb+");
 
 	cout << "Codigo Empleado, Codigo Producto, Fecha, Precio de Venta" << endl;
-	Venta v;
-	fread(&v, sizeof(Venta), 1, ventas);
+	Venta venta;
+	fread(&venta, sizeof(Venta), 1, ventas);
 
 	while (!feof(ventas)) {
-		cout << v.codEmp << ", " << v.codProd << ", " << v.fecha << ", " << v.precioVenta << endl;
-		fread(&v, sizeof(Venta), 1, ventas);
+		cout << venta.codEmpleado << ", " << venta.codProd << ", " << venta.fecha << ", " << venta.precioVenta << endl;
+		fread(&venta, sizeof(Venta), 1, ventas);
 	}
 
 	cout << endl;
 	fclose(ventas);
 }
 
-int buscar(Reporte arr[], int len, char* codEmp) {
+int buscar(Reporte arr[], int len, char* codEmpleado) {
 	int pos = -1;
 	int i = 0;
 	while(pos == -1 && i <= len - 1) {
-		if(strcmp(arr[i].codEmp, codEmp) == 0) {
+		if(strcmp(arr[i].codEmpleado, codEmpleado) == 0) {
 			pos = i;
 		}
 		i++;
@@ -148,6 +148,7 @@ void resolucionTp() {
 	// -	Los empleados deben estar ordenados por total recaudado descendente
 	// -	Los productos vendidos por cada empleado deben estar ordenados por fecha de venta descendente
 	// Para resolver el ejercicio deberá utilizar un vector estático para guardar los empleados y pilas dinámicas en cada empleado del vector que contendrán los productos vendidos por cada uno de ellos.
+		
 		// EMPLEADOS
 
 		Reporte vecReporte[50];
@@ -164,7 +165,7 @@ void resolucionTp() {
 		while(!feof(EmpleadosDat)) {
 
 			vecReporte[i].totalProductosVendidos = regEmpleado.cantProdVend;
-			strcpy(vecReporte[i].codEmp, regEmpleado.codEmp);
+			strcpy(vecReporte[i].codEmpleado, regEmpleado.codEmpleado);
 			strcpy(vecReporte[i].nombYApe, regEmpleado.nombYApe);
 
 			i++;
@@ -187,12 +188,12 @@ void resolucionTp() {
 
 		while(!feof(VentasDat)) {
 
-			int pos = buscar(vecReporte,50,regVentas.codEmp);
+			int pos = buscar(vecReporte,50,regVentas.codEmpleado);
 
 			infoVenta.codProd = regVentas.codProd;
 			infoVenta.fecha = regVentas.fecha;
 
-			strcpy(vecReporte[pos].codEmp, regVentas.codEmp);
+			strcpy(vecReporte[pos].codEmpleado, regVentas.codEmpleado);
 			vecReporte[pos].totalRecaudado += regVentas.precioVenta;
 			vecReporte[pos].totalProductosVendidos ++;
 
@@ -209,7 +210,7 @@ void resolucionTp() {
 
 		for(int i = 0; i <= contador - 1; i++) {
 
-			cout << "Codigo de empleado: " << vecReporte[i].codEmp << endl;
+			cout << "Codigo de empleado: " << vecReporte[i].codEmpleado << endl;
 			cout << "Nombre y apellido: " << vecReporte[i].nombYApe << endl;
 			cout << "Total de productos vendidos: "<< vecReporte[i].totalProductosVendidos << endl;
 			cout << "Total recaudado: $"<< vecReporte[i].totalRecaudado << ".00" << endl;
